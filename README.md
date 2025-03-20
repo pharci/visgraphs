@@ -10,7 +10,7 @@
 ## Установка:
 1. Клонируйте репозиторий:
    ```bash
-   git clone https://github.com/yourusername/visgraphs.git
+   git clone https://github.com/pharci/visgraphs.git
    ```
 2. Соберите проект с помощью выбранной среды разработки.
 
