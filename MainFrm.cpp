@@ -71,8 +71,9 @@ BOOL CMainFrame::PreCreateWindow(CREATESTRUCT& cs)
 {
 	if( !CFrameWnd::PreCreateWindow(cs) )
 		return FALSE;
-	// TODO: изменить класс Window или стили посредством изменения
-	//  CREATESTRUCT cs
+
+	cs.cx = 720;
+	cs.cy = 720;
 
 	return TRUE;
 }
