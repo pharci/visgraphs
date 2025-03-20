@@ -61,8 +61,8 @@ void DrawFunc(CDC* pDC, CvisgraphsView* pView, CvisgraphsDoc* pDoc, IFuncSolver&
 	CPen Pen(PS_SOLID, 2, color);
 	CPen* pOldPen = pDC->SelectObject(&Pen);
 
-	double x = width / 20 * scale;
-	for (double d = -20; d <= 20; d += 0.1) {
+	double x = 50 * scale;
+	for (double d = (-width/2 - offsetX) / (50 * scale); d <= (width/2 - offsetX) / (50 * scale); d += 0.1) {
 		pDC->MoveTo(
 			width / 2 + x * d + offsetX,
 			height / 2 - x * fs(d) + offsetY
@@ -97,9 +97,23 @@ void DrawLines(CDC* pDC, CvisgraphsView* pView, CvisgraphsDoc* pDoc) {
 
 	CString text;
 	pDC->SetTextColor(RGB(25, 25, 25));
+
+
+	int step = 1;
+	if (scale < 0.7) {
+		step = 2;
+	}
+	else if (scale > 0.7) {
+		step = 1;
+	}
+
 	//Сетка OX
-	for (double i = -30; i <= 30; i++) {
-		double x = (width / 2 + width / 20 * scale * i) + offsetX;
+	for (int i = (-width/2 - offsetX) / (50 * scale); i <= (width/2 - offsetX) / (50 * scale); i++) {
+		if (i % step != 0) {
+			continue;
+		}
+
+		double x = (width / 2 + 50 * scale * i) + offsetX;
 		double y = height / 2 + offsetY;
 
 		if (i != 0) {
@@ -107,22 +121,33 @@ void DrawLines(CDC* pDC, CvisgraphsView* pView, CvisgraphsDoc* pDoc) {
 			pDC->LineTo(x, height);
 		}
 
-		text.Format(_T("%g"), i);
-		pDC->TextOut(x - 4, y + 5, text);
+		text.Format(_T("%d"), i);
+		if (i != 0) {
+			pDC->TextOut(x - 4, y + 5, text);
+		}
+		else {
+			pDC->TextOut(x - 20, y + 5, text);
+		}
 	}
 
 	//Сетка OY
-	for (double i = -30; i <= 30; i++) {
+	for (int i = (-height/2 + offsetY) / (50 * scale); i <= (height/2 + offsetY) / (50 * scale); i++) {
+		if (i % step != 0) {
+			continue;
+		}
+
 		double x = (width / 2) + offsetX;
-		double y = (height / 2 - width / 20 * scale * i) + offsetY;
+		double y = (height / 2 - 50 * scale * i) + offsetY;
 
 		if (i != 0) {
 			pDC->MoveTo(0, y);
 			pDC->LineTo(width, y);
 		}
 
-		text.Format(_T("%g"), i);
-		pDC->TextOut(x - 20, y - 7, text);
+		if (i != 0) {
+			text.Format(_T("%d"), i);
+			pDC->TextOut(x - 20, y - 7, text);
+		}
 	}
 
 	//Ось OX
@@ -161,14 +186,21 @@ void CvisgraphsView::OnDraw(CDC* pDC) {
 	DrawLines(&memDC, this, pDoc);
 
 	LinearFunc lf(1, 1);
+	LinearFunc lf2(1, 5);
 	SquareFunc sf(1, 0, 0);
 	SinFunc sinf;
 	CosFunc cosf;
+	AbsFunc abslf(lf2);
+	kFunc klf(lf, 2);
+	kFunc ksinf(sf, -0.5);
 
 	DrawFunc(&memDC, this, pDoc, lf, RGB(205, 180, 219));
 	DrawFunc(&memDC, this, pDoc, sf, RGB(255, 200, 221));
 	DrawFunc(&memDC, this, pDoc, sinf, RGB(255, 175, 204));
 	DrawFunc(&memDC, this, pDoc, cosf, RGB(162, 210, 255));
+	DrawFunc(&memDC, this, pDoc, abslf, RGB(52, 252, 12));
+	DrawFunc(&memDC, this, pDoc, klf, RGB(52, 63, 12));
+	DrawFunc(&memDC, this, pDoc, ksinf, RGB(96, 212, 178));
 
 	pDC->BitBlt(0, 0, rect.Width(), rect.Height(), &memDC, 0, 0, SRCCOPY);
 	memDC.SelectObject(pOldBitmap);

@@ -45,3 +45,24 @@ public:
 	double operator()(double x) override { return cos(x); };
 	std::string getName() override { return this->name; }
 };
+
+class AbsFunc : public IFuncSolver {
+private:
+	std::string name = "Abs";
+	IFuncSolver& fs;
+public:
+	AbsFunc(IFuncSolver& fs) : fs(fs) {}
+	double operator()(double x) override { return abs(fs(x)); }
+	std::string getName() override { return this->name; }
+};
+
+class kFunc : public IFuncSolver {
+private:
+	std::string name = "k";
+	IFuncSolver& fs;
+	double k;
+public:
+	kFunc(IFuncSolver& fs, double k) : fs(fs), k(k) {}
+	double operator()(double x) override { return k * fs(x); }
+	std::string getName() override { return this->name; }
+};
