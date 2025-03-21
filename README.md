@@ -15,8 +15,7 @@
 2. Соберите проект с помощью выбранной среды разработки.
 
 ## Скриншоты:
-![Пример](image.png)
-
+![Определенный интеграл sin x](https://github.com/user-attachments/assets/4b7c8d99-99a4-40b3-a03b-126fa2470a5c)
 ---
 
 Писать сюда [@pharc1](https://t.me/pharc1).
