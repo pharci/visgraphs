@@ -8,6 +8,7 @@
 #include "visgraphsView.h"
 
 #include "iFuncSolver.h"
+#include <cmath>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -47,6 +48,53 @@ CvisgraphsDoc* CvisgraphsView::GetDocument() const {
 	return (CvisgraphsDoc*)m_pDocument;
 }
 #endif
+
+
+void DrawFunc(CDC* pDC, CvisgraphsView* pView, CvisgraphsDoc* pDoc, integralFunc& fs, COLORREF color) {
+	CRect rect;
+	pView->GetClientRect(&rect);
+	double width = rect.Width();
+	double height = rect.Height();
+
+	double scale = pDoc->scale;
+	double offsetX = pDoc->offsetX;
+	double offsetY = pDoc->offsetY;
+
+	CPen Pen(PS_SOLID, 2, color);
+	CPen* pOldPen = pDC->SelectObject(&Pen);
+
+	double sum = 0;
+	double x = 50 * scale;
+	for (double d = fs.getA(); d <= fs.getB(); d += fs.getH()) {
+		sum += fs(d) * fs.getH();
+
+		pDC->MoveTo(
+			width / 2 + x * d + offsetX,
+			height / 2 + offsetY
+		);
+
+		pDC->LineTo(
+			width / 2 + x * d + offsetX,
+			height / 2 - x * fs(d) + offsetY
+		);
+
+		pDC->LineTo(
+			width / 2 + x * (d + fs.getH()) + offsetX,
+			height / 2 - x * fs(d) + offsetY
+		);
+
+		pDC->LineTo(
+			width / 2 + x * (d + fs.getH()) + offsetX,
+			height / 2 + offsetY
+		);
+	}
+
+	pDC->SelectObject(pOldPen);
+
+	CString text;
+	text.Format(_T("S = %g"), sum);
+	pDC->TextOut(width / 2 + x * fs.getB() / 2+ offsetX, height / 2 - x * fs(fs.getB()) / 2 + offsetY, text);
+}
 
 void DrawFunc(CDC* pDC, CvisgraphsView* pView, CvisgraphsDoc* pDoc, IFuncSolver& fs, COLORREF color) {
 	CRect rect;
@@ -185,22 +233,27 @@ void CvisgraphsView::OnDraw(CDC* pDC) {
 
 	DrawLines(&memDC, this, pDoc);
 
-	LinearFunc lf(1, 1);
-	LinearFunc lf2(1, 5);
+	//LinearFunc lf(1, 1);
+	//LinearFunc lf2(1, 5);
 	SquareFunc sf(1, 0, 0);
 	SinFunc sinf;
-	CosFunc cosf;
-	AbsFunc abslf(lf2);
-	kFunc klf(lf, 2);
-	kFunc ksinf(sf, -0.5);
+	//CosFunc cosf;
+	//AbsFunc abslf(lf2);
+	//kFunc klf(lf, 2);
+	//kFunc ksinf(sf, -0.5);
+	//diffFunc diffsf(sf, 0.001);
+	integralFunc integralsf(sf, 0.01, -2, -1);
+	integralFunc integralsinf(sinf, 0.1, -3, 3);
 
-	DrawFunc(&memDC, this, pDoc, lf, RGB(205, 180, 219));
-	DrawFunc(&memDC, this, pDoc, sf, RGB(255, 200, 221));
+	//DrawFunc(&memDC, this, pDoc, lf, RGB(205, 180, 219));
+	DrawFunc(&memDC, this, pDoc, sf, RGB(255, 200, 21));
 	DrawFunc(&memDC, this, pDoc, sinf, RGB(255, 175, 204));
-	DrawFunc(&memDC, this, pDoc, cosf, RGB(162, 210, 255));
-	DrawFunc(&memDC, this, pDoc, abslf, RGB(52, 252, 12));
-	DrawFunc(&memDC, this, pDoc, klf, RGB(52, 63, 12));
-	DrawFunc(&memDC, this, pDoc, ksinf, RGB(96, 212, 178));
+	//DrawFunc(&memDC, this, pDoc, cosf, RGB(162, 210, 255));
+	//DrawFunc(&memDC, this, pDoc, abslf, RGB(52, 252, 12));
+	//DrawFunc(&memDC, this, pDoc, klf, RGB(52, 63, 12));
+	//DrawFunc(&memDC, this, pDoc, ksinf, RGB(96, 212, 178));
+	DrawFunc(&memDC, this, pDoc, integralsf, RGB(125, 21, 128));
+	DrawFunc(&memDC, this, pDoc, integralsinf, RGB(12, 212, 178));
 
 	pDC->BitBlt(0, 0, rect.Width(), rect.Height(), &memDC, 0, 0, SRCCOPY);
 	memDC.SelectObject(pOldBitmap);

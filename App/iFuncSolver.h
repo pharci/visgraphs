@@ -66,3 +66,28 @@ public:
 	double operator()(double x) override { return k * fs(x); }
 	std::string getName() override { return this->name; }
 };
+
+class diffFunc : public IFuncSolver {
+private:
+	std::string name = "diff";
+	IFuncSolver& fs;
+	double h;
+public:
+	diffFunc(IFuncSolver& fs, double h) : fs(fs), h(h) {}
+	double operator()(double x) override { return (fs(x + h) - fs(x - h)) / (2 * h); }
+	std::string getName() override { return this->name; }
+};
+
+class integralFunc : public IFuncSolver {
+private:
+	std::string name = "integral";
+	IFuncSolver& fs;
+	double h, a, b;
+public:
+	integralFunc(IFuncSolver& fs, double h, double a, double b) : fs(fs), h(h), a(a), b(b) {}
+	double operator()(double x) override { return fs(x); }
+	std::string getName() override { return this->name; }
+	double getA() { return a; }
+	double getB() { return b; }
+	double getH() { return h; }
+};
