@@ -91,9 +91,15 @@ void DrawFunc(CDC* pDC, CvisgraphsView* pView, CvisgraphsDoc* pDoc, integralFunc
 
 	pDC->SelectObject(pOldPen);
 
+
+	pDC->SetTextColor(RGB(255, 255, 255));
+	pDC->SetBkColor(RGB(100, 100, 100));
+
 	CString text;
 	text.Format(_T("S = %g"), sum);
-	pDC->TextOut(width / 2 + x * fs.getB() / 2+ offsetX, height / 2 - x * fs(fs.getB()) / 2 + offsetY, text);
+	pDC->TextOut(
+		width / 2 + x * (fs.getA() + fs.getB()) / 2 + offsetX, 
+		height / 2 - x * (fs(fs.getA()) + fs(fs.getB())) / 2 + offsetY, text);
 }
 
 void DrawFunc(CDC* pDC, CvisgraphsView* pView, CvisgraphsDoc* pDoc, IFuncSolver& fs, COLORREF color) {
@@ -110,11 +116,11 @@ void DrawFunc(CDC* pDC, CvisgraphsView* pView, CvisgraphsDoc* pDoc, IFuncSolver&
 	CPen* pOldPen = pDC->SelectObject(&Pen);
 
 	double x = 50 * scale;
+	pDC->MoveTo(
+		width / 2 + x * (-width / 2 - offsetX) / (50 * scale) + offsetX,
+		height / 2 - x * fs((-width / 2 - offsetX) / (50 * scale)) + offsetY
+	);
 	for (double d = (-width/2 - offsetX) / (50 * scale); d <= (width/2 - offsetX) / (50 * scale); d += 0.1) {
-		pDC->MoveTo(
-			width / 2 + x * d + offsetX,
-			height / 2 - x * fs(d) + offsetY
-		);
 		pDC->LineTo(
 			width / 2 + x * (d + 0.1) + offsetX,
 			height / 2 - x * fs(d + 0.1) + offsetY
@@ -233,8 +239,7 @@ void CvisgraphsView::OnDraw(CDC* pDC) {
 
 	DrawLines(&memDC, this, pDoc);
 
-	//LinearFunc lf(1, 1);
-	//LinearFunc lf2(1, 5);
+	LinearFunc lf(1, 5);
 	SquareFunc sf(1, 0, 0);
 	SinFunc sinf;
 	//CosFunc cosf;
@@ -242,16 +247,19 @@ void CvisgraphsView::OnDraw(CDC* pDC) {
 	//kFunc klf(lf, 2);
 	//kFunc ksinf(sf, -0.5);
 	//diffFunc diffsf(sf, 0.001);
+	integralFunc integrallf(lf, 0.5, -10, -5);
 	integralFunc integralsf(sf, 0.01, -2, -1);
 	integralFunc integralsinf(sinf, 0.1, -3, 3);
 
-	//DrawFunc(&memDC, this, pDoc, lf, RGB(205, 180, 219));
+	DrawFunc(&memDC, this, pDoc, lf, RGB(205, 180, 219));
 	DrawFunc(&memDC, this, pDoc, sf, RGB(255, 200, 21));
 	DrawFunc(&memDC, this, pDoc, sinf, RGB(255, 175, 204));
 	//DrawFunc(&memDC, this, pDoc, cosf, RGB(162, 210, 255));
 	//DrawFunc(&memDC, this, pDoc, abslf, RGB(52, 252, 12));
 	//DrawFunc(&memDC, this, pDoc, klf, RGB(52, 63, 12));
 	//DrawFunc(&memDC, this, pDoc, ksinf, RGB(96, 212, 178));
+	//DrawFunc(&memDC, this, pDoc, diffsf, RGB(96, 212, 178));
+	DrawFunc(&memDC, this, pDoc, integrallf, RGB(125, 61, 128));
 	DrawFunc(&memDC, this, pDoc, integralsf, RGB(125, 21, 128));
 	DrawFunc(&memDC, this, pDoc, integralsinf, RGB(12, 212, 178));
 

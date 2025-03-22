@@ -1,11 +1,5 @@
-﻿
-// visgraphsDoc.cpp: реализация класса CvisgraphsDoc 
-//
-
-#include "pch.h"
+﻿#include "pch.h"
 #include "framework.h"
-// SHARED_HANDLERS можно определить в обработчиках фильтров просмотра реализации проекта ATL, эскизов
-// и поиска; позволяет совместно использовать код документа в данным проекте.
 #ifndef SHARED_HANDLERS
 #include "visgraphs.h"
 #endif
@@ -18,50 +12,27 @@
 #define new DEBUG_NEW
 #endif
 
-// CvisgraphsDoc
-
 IMPLEMENT_DYNCREATE(CvisgraphsDoc, CDocument)
-
 BEGIN_MESSAGE_MAP(CvisgraphsDoc, CDocument)
 END_MESSAGE_MAP()
 
+CvisgraphsDoc::CvisgraphsDoc() noexcept {}
 
-// Создание или уничтожение CvisgraphsDoc
+CvisgraphsDoc::~CvisgraphsDoc() {}
 
-CvisgraphsDoc::CvisgraphsDoc() noexcept
-{
-	// TODO: добавьте код для одноразового вызова конструктора
-
-}
-
-CvisgraphsDoc::~CvisgraphsDoc()
-{
-}
-
-BOOL CvisgraphsDoc::OnNewDocument()
-{
+BOOL CvisgraphsDoc::OnNewDocument() {
 	if (!CDocument::OnNewDocument())
 		return FALSE;
-
-	// TODO: добавьте код повторной инициализации
-	// (Документы SDI будут повторно использовать этот документ)
-
 	return TRUE;
 }
 
-
-
-
 // Сериализация CvisgraphsDoc
-
 void CvisgraphsDoc::Serialize(CArchive& ar)
 {
-	if (ar.IsStoring())
-	{
+	if (ar.IsStoring()) {
 		// TODO: добавьте код сохранения
 	}
-	else
-	{
+	else {
 		// TODO: добавьте код загрузки
 	}
 }
@@ -133,6 +104,3 @@ void CvisgraphsDoc::Dump(CDumpContext& dc) const
 	CDocument::Dump(dc);
 }
 #endif //_DEBUG
-
-
-// Команды CvisgraphsDoc
